@@ -1,14 +1,14 @@
 bl_info = {
-    "name": "Origin Alignement",
+    "name": "Origin Editor",
     "author": "Leonardo Caceres",
     "version": (1, 0),
     "blender": (2, 70, 0),
     "location": "View3D > Object > ",
-    "description": "Modify and align origin object",
+    "description": "Modify and align the origin of several objects.",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
-    "category": "Object"}
+    "category": "Tools"}
 
 import bpy
 #import mathutils
@@ -165,7 +165,7 @@ class OriginAlignementOperator(bpy.types.Operator):
 class OriginAlignementPanel(bpy.types.Panel):
     """Docstring of OriginAlignementPanel"""
     bl_idname = "VIEW3D_PT_origin_alignement"
-    bl_label = "Origin Alignement Panel"
+    bl_label = "Origin Editor"
     
 #    bl_space_type = 'VIEW_3D'
 #    bl_region_type = 'TOOLS'
