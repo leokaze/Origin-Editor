@@ -17,6 +17,7 @@ from bpy.props import (
         EnumProperty,
         FloatProperty,
         PointerProperty,
+        IntProperty,
         )
 from bpy.types import (
         Operator,
@@ -24,6 +25,16 @@ from bpy.types import (
         PropertyGroup,
         )
 from mathutils import Vector
+
+#-----------
+
+# def setPos(self, value):
+# 	self.posicion = value
+
+# def getPos(self):
+# 	return (self.posicion)
+
+#------------
 
 class OriginAlignemetProperties(PropertyGroup):
     zAxis = EnumProperty(
@@ -35,24 +46,30 @@ class OriginAlignemetProperties(PropertyGroup):
                 ],
             description="Z axis used to align origin"
             )
-    esquina = EnumProperty(
-            name = "border",
-            items=[
-                ("ur", "UR", "", 1),
-                ("um", "UM", "", 2),
-                ("ul", "UL", "", 3),
-                ("mr", "MR", "", 4),
-                ("mm", "MM", "", 5),
-                ("ml", "ML", "", 6),
-                ("br", "BR", "", 7),
-                ("bm", "BM", "", 8),
-                ("bl", "BL", "", 9)
-                ],
-            description="point to align origin"
-            )
     
-#-----------------------------
+    # esquina = EnumProperty(
+    #         name = "border",
+    #         items=[
+    #             ("ur", "UR", "", 1),
+    #             ("um", "UM", "", 2),
+    #             ("ul", "UL", "", 3),
+    #             ("mr", "MR", "", 4),
+    #             ("mm", "MM", "", 5),
+    #             ("ml", "ML", "", 6),
+    #             ("br", "BR", "", 7),
+    #             ("bm", "BM", "", 8),
+    #             ("bl", "BL", "", 9)
+    #             ],
+    #         description="point to align origin"
+    #         )
+    posicion = IntProperty(
+    			name="Posicion",
+    			description = "origin to position",
+    			min = 1
+    		)
 
+
+#-----------------------------
 
 #------------------------------
 
@@ -82,30 +99,56 @@ def AlignOrigin (obj, props):
     elif props.zAxis == 'mz':
         zloc[1]=obj.dimensions.y
 
-    if props.esquina == 'ur':
+    # if props.esquina == 'ur':
+    #     cursor = getCorner (obj, 1) + obj.location 
+    # elif props.esquina == 'um':
+    #     dim = Vector((obj.dimensions.x,0.0,0.0))
+    #     dim[0] = dim[0]/2
+    #     cursor = getCorner(obj,1) + obj.location + dim
+    # elif props.esquina == 'ul':
+    #     cursor = getCorner (obj, 5) + obj.location
+    # elif props.esquina == 'mr':
+    #     dim = Vector((0.0,0.0,obj.dimensions.z))
+    #     dim[2]= dim[2]/2
+    #     cursor = getCorner(obj,0) + obj.location + dim
+    # elif props.esquina == 'mm':
+    #     dim = Vector((obj.dimensions.x/2, 0.0, obj.dimensions.z/2))
+    #     cursor = getCorner(obj, 0)+obj.location+dim
+    # elif props.esquina == 'ml':
+    #     dim = Vector((0.0,0.0,obj.dimensions.z/2))
+    #     cursor = getCorner(obj, 4) + obj.location + dim
+    # elif props.esquina == 'br':
+    #     cursor = getCorner(obj, 0) + obj.location
+    # elif props.esquina == 'bm':
+    #     dim = Vector((obj.dimensions.x/2, 0.0,0.0))
+    #     cursor = getCorner(obj, 0) + obj.location + dim
+    # elif props.esquina == 'bl':
+    #     cursor = getCorner(obj, 4) + obj.location
+
+    if props.posicion == 1:
         cursor = getCorner (obj, 1) + obj.location 
-    elif props.esquina == 'um':
+    elif props.posicion == 2:
         dim = Vector((obj.dimensions.x,0.0,0.0))
         dim[0] = dim[0]/2
         cursor = getCorner(obj,1) + obj.location + dim
-    elif props.esquina == 'ul':
+    elif props.posicion == 3:
         cursor = getCorner (obj, 5) + obj.location
-    elif props.esquina == 'mr':
+    elif props.posicion == 4:
         dim = Vector((0.0,0.0,obj.dimensions.z))
         dim[2]= dim[2]/2
         cursor = getCorner(obj,0) + obj.location + dim
-    elif props.esquina == 'mm':
+    elif props.posicion == 5:
         dim = Vector((obj.dimensions.x/2, 0.0, obj.dimensions.z/2))
         cursor = getCorner(obj, 0)+obj.location+dim
-    elif props.esquina == 'ml':
+    elif props.posicion == 6:
         dim = Vector((0.0,0.0,obj.dimensions.z/2))
         cursor = getCorner(obj, 4) + obj.location + dim
-    elif props.esquina == 'br':
+    elif props.posicion == 7:
         cursor = getCorner(obj, 0) + obj.location
-    elif props.esquina == 'bm':
+    elif props.posicion == 8:
         dim = Vector((obj.dimensions.x/2, 0.0,0.0))
         cursor = getCorner(obj, 0) + obj.location + dim
-    elif props.esquina == 'bl':
+    elif props.posicion == 9:
         cursor = getCorner(obj, 4) + obj.location
 
     cursor = cursor + zloc
@@ -115,6 +158,28 @@ def AlignOrigin (obj, props):
     bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
     
     #print (getCorner(obj, 1))
+
+class ChangePosOperator(bpy.types.Operator):
+	"""Change icon origin of buttons"""
+	bl_idname = "change.pos_operator"
+	bl_label = "Change position operator"
+	bl_options = {'REGISTER'}
+
+	pos = bpy.props.IntProperty()
+
+
+
+	@classmethod
+	def poll(cls, context):
+		return context.object is not None
+
+	def execute(self, context):
+		alignProps = context.scene.align_origin
+		alignProps.posicion = self.pos
+		print("posicion es ", self.pos, "y...", alignProps.posicion)
+
+		return {'FINISHED'}
+		
 
 
 class OriginAlignementOperator(bpy.types.Operator):
@@ -182,22 +247,87 @@ class OriginAlignementPanel(bpy.types.Panel):
     
     def draw(self, context):
         layout = self.layout
-        alignO = context.scene.align_origin
+        alignProps = context.scene.align_origin
+        pos = context.scene.align_origin.posicion
         
         layout.operator(OriginAlignementOperator.bl_idname, text = "Alinear", icon = 'TRIA_RIGHT', )#.posicion=1
-        layout.prop(alignO, "zAxis", text="Z axis", expand=True)
+        layout.prop(alignProps, "zAxis", text="Z axis", expand=True)
         
-        layout.prop(alignO, "esquina", text="border align", expand=True)
+        # layout.prop(alignProps, "esquina", text="border align", expand=True)
+
+        # layout.label ("Controles")
+        layout.separator()
+        #---BOTONES GRUPO 1------
+        row = layout.row(align = True)
+        row.alignment = "EXPAND"
+        if pos == 1:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "topL", icon = icon).pos = 1
+        if pos == 2:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "topM", icon = icon).pos = 2
+        if pos == 3:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "topR", icon = icon).pos = 3
+        #---------------------------
+        #---BOTONES GRUPO 2------
+        row = layout.row(align = True)
+        row.alignment = "EXPAND"
+        if pos == 4:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "midL", icon = icon).pos = 4
+        if pos == 5:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "midM", icon = icon).pos = 5
+        if pos == 6:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "midR", icon = icon).pos = 6
+        #---------------------------
+        #---BOTONES GRUPO 1------
+        row = layout.row(align = True)
+        row.alignment = "EXPAND"
+        if pos == 7:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "btmL", icon = icon).pos = 7
+        if pos == 8:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "btmM", icon = icon).pos = 8
+        if pos == 9:
+        	icon = "RADIOBUT_ON"
+        else:
+        	icon = "RADIOBUT_OFF"
+        row.operator(ChangePosOperator.bl_idname, text = "btmR", icon = icon).pos = 9
+        #---------------------------
+
+
 
 def register():
-    bpy.utils.register_class(OriginAlignementOperator)
-    bpy.utils.register_class(OriginAlignementPanel)
-    bpy.utils.register_class(OriginAlignemetProperties)
-    bpy.types.Scene.align_origin = PointerProperty(type=OriginAlignemetProperties)
+	bpy.utils.register_class(ChangePosOperator)
+	bpy.utils.register_class(OriginAlignementOperator)
+	bpy.utils.register_class(OriginAlignementPanel)
+	bpy.utils.register_class(OriginAlignemetProperties)
+	bpy.types.Scene.align_origin = PointerProperty(type=OriginAlignemetProperties)
     
 
 def unregister():
     bpy.utils.unregister_class(OriginAlignementOperator)
+    bpy.utils.unregister_class(ChangePosOperator)
     bpy.utils.unregister_class(OriginAlignementPanel)
     bpy.utils.unregister_class(OriginAlignemetProperties)
     del bpy.types.Scene.align_origin
