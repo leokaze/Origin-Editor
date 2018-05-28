@@ -41,7 +41,7 @@ class OriginAlignemetProperties(PropertyGroup):
             name="zAxis",
             items=[
                 ("pz", "+Z", "", 1),
-                ("z", "Z/2", "", 2),
+                ("z", "Z", "", 2),
                 ("mz", "-Z", "", 3)
                 ],
             description="Z axis used to align origin"
@@ -264,7 +264,7 @@ class OriginAlignementPanel(bpy.types.Panel):
         	icon = "RADIOBUT_ON"
         else:
         	icon = "RADIOBUT_OFF"
-        row.operator(ChangePosOperator.bl_idname, text = "topL", icon = icon).pos = 1
+        row.operator(ChangePosOperator.bl_idname, text = "topR", icon = icon).pos = 1
         if pos == 2:
         	icon = "RADIOBUT_ON"
         else:
@@ -274,7 +274,7 @@ class OriginAlignementPanel(bpy.types.Panel):
         	icon = "RADIOBUT_ON"
         else:
         	icon = "RADIOBUT_OFF"
-        row.operator(ChangePosOperator.bl_idname, text = "topR", icon = icon).pos = 3
+        row.operator(ChangePosOperator.bl_idname, text = "topL", icon = icon).pos = 3
         #---------------------------
         #---BOTONES GRUPO 2------
         row = layout.row(align = True)
@@ -283,7 +283,7 @@ class OriginAlignementPanel(bpy.types.Panel):
         	icon = "RADIOBUT_ON"
         else:
         	icon = "RADIOBUT_OFF"
-        row.operator(ChangePosOperator.bl_idname, text = "midL", icon = icon).pos = 4
+        row.operator(ChangePosOperator.bl_idname, text = "midR", icon = icon).pos = 4
         if pos == 5:
         	icon = "RADIOBUT_ON"
         else:
@@ -293,7 +293,7 @@ class OriginAlignementPanel(bpy.types.Panel):
         	icon = "RADIOBUT_ON"
         else:
         	icon = "RADIOBUT_OFF"
-        row.operator(ChangePosOperator.bl_idname, text = "midR", icon = icon).pos = 6
+        row.operator(ChangePosOperator.bl_idname, text = "midL", icon = icon).pos = 6
         #---------------------------
         #---BOTONES GRUPO 1------
         row = layout.row(align = True)
@@ -302,7 +302,7 @@ class OriginAlignementPanel(bpy.types.Panel):
         	icon = "RADIOBUT_ON"
         else:
         	icon = "RADIOBUT_OFF"
-        row.operator(ChangePosOperator.bl_idname, text = "btmL", icon = icon).pos = 7
+        row.operator(ChangePosOperator.bl_idname, text = "btmR", icon = icon).pos = 7
         if pos == 8:
         	icon = "RADIOBUT_ON"
         else:
@@ -312,7 +312,7 @@ class OriginAlignementPanel(bpy.types.Panel):
         	icon = "RADIOBUT_ON"
         else:
         	icon = "RADIOBUT_OFF"
-        row.operator(ChangePosOperator.bl_idname, text = "btmR", icon = icon).pos = 9
+        row.operator(ChangePosOperator.bl_idname, text = "btmL", icon = icon).pos = 9
         #---------------------------
 
 
